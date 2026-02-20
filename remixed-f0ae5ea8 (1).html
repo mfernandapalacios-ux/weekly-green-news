@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Green News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--vd:#1a4a2e;--vm:#2d7a4f;--vc:#5aaa72;--vs:#c8e6d0;--vbg:#f0f7f2;--ac:#e8a020;--gr:#666;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Sans 3',sans-serif;background:#e8ede9;min-height:100vh;}
+
+/* ── LOGIN ── */
+#login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0f2d1a,#1a4a2e 60%,#2d7a4f);}
+.lcard{background:#fff;border-radius:16px;padding:40px 44px;width:380px;box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:center;}
+.llogo{font-size:52px;margin-bottom:10px;}
+.ltitle{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--vd);}
+.ltitle span{color:var(--vc);}
+.lsub{font-size:12px;color:var(--gr);margin:6px 0 26px;line-height:1.5;}
+.llabel{display:block;text-align:left;font-size:11px;font-weight:700;color:var(--vd);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.linput{width:100%;padding:11px 14px;border:1.5px solid #d0ddd4;border-radius:8px;font-size:14px;outline:none;font-family:'Source Sans 3',sans-serif;}
+.linput:focus{border-color:var(--vm);}
+.lbtn{width:100%;padding:12px;background:var(--vd);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;font-family:'Source Sans 3',sans-serif;letter-spacing:.5px;}
+.lbtn:hover{background:var(--vm);}
+.lbtn:disabled{background:#aaa;cursor:not-allowed;}
+.lerr{background:#fde8e8;color:#b02020;border-radius:6px;padding:8px 12px;font-size:12px;margin-top:10px;}
+.lhint{font-size:10px;color:#bbb;margin-top:14px;line-height:1.6;}
+.lhint a{color:var(--vc);}
+
+/* ── APP ── */
+#app{display:none;flex-direction:column;min-height:100vh;}
+.appbar{background:var(--vd);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.abrand{display:flex;align-items:center;gap:10px;}
+.alogo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--vc);}
+.asub{font-size:11px;color:var(--vs);}
+.anav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.btn{background:var(--vm);color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-weight:600;font-family:'Source Sans 3',sans-serif;}
+.btn:hover{background:var(--vc);}
+.btn:disabled{background:#555;cursor:not-allowed;opacity:.6;}
+.btn-o{background:transparent;border:1px solid var(--vc);color:var(--vc);}
+.btn-o:hover{background:rgba(90,170,114,.15);}
+.btn-g{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.7);font-size:11px;padding:5px 10px;}
+.btn-g:hover{background:rgba(255,255,255,.1);color:#fff;}
+.wbadge{background:rgba(255,255,255,.1);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--vs);}
+.weeknav{background:#fff;border-bottom:1px solid #d0ddd4;padding:10px 20px;display:flex;align-items:center;gap:10px;overflow-x:auto;}
+.wtab{flex-shrink:0;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #ccc;background:#fff;color:#555;font-weight:600;font-family:'Source Sans 3',sans-serif;}
+.wtab.active{background:var(--vd);color:#fff;border-color:var(--vd);}
+.wtab.loaded{border-color:var(--vm);color:var(--vm);}
+
+/* ── PAGE ── */
+.pagewrap{display:flex;justify-content:center;padding:24px 16px 40px;}
+.page{width:816px;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.2);}
+
+/* header */
+.phdr{background:var(--vd);padding:20px 36px 14px;display:flex;justify-content:space-between;align-items:flex-end;}
+.pmast{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:#fff;letter-spacing:.5px;}
+.pmast span{color:var(--vc);}
+.ptag{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--vs);margin-top:2px;}
+.pmeta{text-align:right;font-size:11px;color:var(--vs);line-height:1.7;}
+.pmeta strong{color:#fff;font-size:13px;}
+.psubbr{background:var(--vc);padding:5px 36px;display:flex;justify-content:space-between;font-size:10.5px;color:#fff;font-weight:600;}
+
+/* content */
+.pcont{padding:16px 36px 0;}
+.seclbl{display:flex;align-items:center;gap:8px;margin:14px 0 8px;}
+.seclbl h2{font-family:'Playfair Display',serif;font-size:12px;font-weight:700;color:var(--vd);text-transform:uppercase;letter-spacing:1.5px;white-space:nowrap;}
+.secline{flex:1;height:1.5px;background:linear-gradient(to right,var(--vm),transparent);}
+
+/* kpi */
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.kbox{background:var(--vd);border-radius:6px;padding:10px 8px;text-align:center;}
+.knum{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--vc);line-height:1;}
+.klbl{font-size:8.5px;color:#ccc;margin-top:4px;line-height:1.3;}
+.ksrc{font-size:7.5px;color:var(--vs);margin-top:2px;font-style:italic;}
+
+/* cards */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.card{border:1px solid #d8ead0;border-radius:6px;padding:10px 12px;background:#fff;}
+.ctag{display:inline-block;background:var(--vs);color:var(--vd);font-size:8.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-bottom:5px;}
+.ctag.blue{background:#dceeff;color:#1a5080;}
+.ctag.amber{background:#fef3cd;color:#8a6000;}
+.card h3{font-family:'Playfair Display',serif;font-size:12px;font-weight:700;color:var(--vd);margin-bottom:4px;line-height:1.3;}
+.card p{font-size:10px;line-height:1.55;color:#444;}
+.meta{font-size:8.5px;color:var(--gr);margin-top:5px;font-style:italic;}
+.meta a{color:var(--vm);text-decoration:none;}
+
+/* tabla */
+.tabla{width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:10px;}
+.tabla thead tr{background:var(--vd);color:#fff;}
+.tabla thead th{padding:5px 8px;text-align:left;font-size:9px;}
+.tabla tbody tr:nth-child(even){background:var(--vbg);}
+.tabla tbody td{padding:4px 8px;border-bottom:1px solid #d8ead0;color:#333;vertical-align:top;}
+.tabla a{color:var(--vm);text-decoration:none;font-size:8.5px;}
+.badge{display:inline-block;font-size:8px;font-weight:700;padding:1px 6px;border-radius:10px;text-transform:uppercase;}
+.b-ok{background:#d4edda;color:#1a6b30;}
+.b-pend{background:#fef3cd;color:#8a6000;}
+.b-sanc{background:#fde8e8;color:#b02020;}
+
+/* interview */
+.intbox{background:linear-gradient(135deg,var(--vd),#2a6040);border-radius:8px;padding:14px 16px;color:#fff;position:relative;overflow:hidden;}
+.intbox::before{content:'"';position:absolute;top:-10px;right:12px;font-size:80px;font-family:'Playfair Display',serif;color:rgba(255,255,255,.07);line-height:1;}
+.ibadge{background:var(--ac);color:#fff;font-size:8.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-bottom:8px;display:inline-block;}
+.ihdr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.iavatar{width:38px;height:38px;border-radius:50%;background:var(--vc);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:2px solid rgba(255,255,255,.3);}
+.iname{font-family:'Playfair Display',serif;font-size:12px;font-weight:700;}
+.irole{font-size:9.5px;color:var(--vs);}
+.qa{margin-bottom:6px;}
+.qq{font-size:9.5px;font-weight:700;color:var(--vs);margin-bottom:2px;}
+.qa{font-size:9.5px;line-height:1.5;color:rgba(255,255,255,.9);}
+
+/* reflection */
+.refl{background:var(--vbg);border:1px dashed var(--vm);border-radius:8px;padding:14px 16px;text-align:center;display:flex;flex-direction:column;justify-content:center;}
+.refl blockquote{font-family:'Playfair Display',serif;font-size:12px;font-style:italic;color:var(--vd);line-height:1.5;margin-bottom:6px;}
+.refl cite{font-size:9px;color:var(--gr);}
+.botgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-bottom:16px;}
+
+/* fuentes */
+.fuentes{background:#f8f8f6;border-top:2px solid var(--vm);padding:10px 36px;}
+.fuentes h4{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--vd);margin-bottom:6px;}
+.fuentes ul{list-style:none;display:flex;flex-wrap:wrap;gap:4px 16px;}
+.fuentes li{font-size:8.5px;color:#555;}
+.fuentes a{color:var(--vm);text-decoration:none;}
+
+/* footer */
+.pfooter{background:var(--vd);padding:8px 36px;display:flex;justify-content:space-between;align-items:center;}
+.pfl{font-size:9px;color:var(--vs);line-height:1.6;}
+.pfl strong{color:#fff;}
+.pfr{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--vc);}
+.divider{height:1px;background:linear-gradient(to right,transparent,var(--vm),transparent);margin:10px 0;}
+.empty{background:var(--vbg);border:1px dashed var(--vm);border-radius:6px;padding:12px;text-align:center;font-size:10px;color:var(--gr);grid-column:span 2;margin-bottom:10px;}
+
+/* loading / error */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;gap:16px;}
+.spinner{width:40px;height:40px;border:4px solid var(--vs);border-top-color:var(--vm);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.lmsg{color:var(--vd);font-size:14px;font-weight:600;text-align:center;}
+.lsub2{color:var(--gr);font-size:11px;text-align:center;max-width:300px;}
+.errbox{background:#fde8e8;border:1px solid #f5c0c0;border-radius:8px;padding:20px;margin:20px;text-align:center;color:#b02020;}
+
+.rbadge{display:inline-block;background:#d4edda;color:#1a6b30;font-size:7.5px;font-weight:700;padding:1px 5px;border-radius:10px;text-transform:uppercase;margin-left:4px;}
+.abadge2{display:inline-block;background:#fef3cd;color:#8a6000;font-size:7.5px;font-weight:700;padding:1px 5px;border-radius:10px;text-transform:uppercase;margin-left:4px;}
+
+@media print{
+  #login,#app .appbar,#app .weeknav{display:none!important;}
+  body{background:none;}
+  .pagewrap{padding:0;}
+  .page{box-shadow:none;width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login">
+  <div class="lcard">
+    <div class="llogo">🌿</div>
+    <div class="ltitle">Weekly <span>Green News</span></div>
+    <div class="lsub">Newsletter ambiental chileno<br>por Ma. Fernanda Palacios</div>
+    <label class="llabel">API Key de Anthropic</label>
+    <input id="apiInput" class="linput" type="password" placeholder="sk-ant-api03-...">
+    <div id="loginErr" class="lerr" style="display:none"></div>
+    <button id="loginBtn" class="lbtn" onclick="doLogin()">Ingresar →</button>
+    <div class="lhint">
+      ¿No tienes API Key? Créala en <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a><br>
+      La clave solo se usa en tu sesión y no se almacena.
+    </div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+  <!-- App Bar -->
+  <div class="appbar">
+    <div class="abrand">
+      <span style="font-size:24px">🌿</span>
+      <div>
+        <div class="alogo">Weekly Green News</div>
+        <div class="asub">por Ma. Fernanda Palacios</div>
+      </div>
+    </div>
+    <div class="anav">
+      <span id="edBadge" class="wbadge">Edición N°1</span>
+      <button class="btn btn-o" onclick="window.print()">🖨 PDF</button>
+      <button id="reloadBtn" class="btn" onclick="reloadWeek()">🔄 Actualizar</button>
+      <button class="btn btn-g" onclick="logout()">Salir</button>
+    </div>
+  </div>
+
+  <!-- Week Tabs -->
+  <div class="weeknav" id="weeknav"></div>
+
+  <!-- Page -->
+  <div class="pagewrap">
+    <div class="page" id="pageContent">
+      <div class="loading">
+        <div class="spinner"></div>
+        <div class="lmsg">🌿 Iniciando Weekly Green News…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const AUTORA = "Ma. Fernanda Palacios";
+let API_KEY = "";
+let activeWeek = 0;
+const cache = {};
+
+// ── Semanas ──────────────────────────────────────────────────────
+function getWeek(offset) {
+  const base = new Date("2026-02-19T00:00:00");
+  const s = new Date(base); s.setDate(s.getDate() + offset * 7);
+  const e = new Date(s);    e.setDate(e.getDate() + 6);
+  const fmt = d => d.toLocaleDateString("es-CL",{day:"numeric",month:"long",year:"numeric"});
+  return {
+    num: offset + 1,
+    label: `${fmt(s)} — ${fmt(e)}`,
+    iso_s: s.toISOString().split("T")[0],
+    iso_e: e.toISOString().split("T")[0]
+  };
+}
+
+// ── Login ────────────────────────────────────────────────────────
+document.getElementById("apiInput").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
+
+async function doLogin() {
+  const key = document.getElementById("apiInput").value.trim();
+  const btn = document.getElementById("loginBtn");
+  const err = document.getElementById("loginErr");
+  if (!key) { showErr("Ingresa tu API Key."); return; }
+  btn.disabled = true; btn.textContent = "Verificando..."; err.style.display="none";
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01"},
+      body:JSON.stringify({model:"claude-haiku-4-5-20251001",max_tokens:10,messages:[{role:"user",content:"hola"}]})
+    });
+    if (r.ok) {
+      API_KEY = key;
+      document.getElementById("login").style.display = "none";
+      document.getElementById("app").style.display = "flex";
+      buildTabs(); loadWeek(0);
+    } else {
+      const d = await r.json().catch(()=>({}));
+      showErr(d?.error?.message || "API Key inválida. Verifica e intenta de nuevo.");
+    }
+  } catch { showErr("Error de conexión. Verifica tu internet."); }
+  btn.disabled = false; btn.textContent = "Ingresar →";
+}
+function showErr(msg){ const e=document.getElementById("loginErr"); e.textContent="⚠️ "+msg; e.style.display="block"; }
+function logout(){ API_KEY=""; document.getElementById("app").style.display="none"; document.getElementById("login").style.display="flex"; document.getElementById("apiInput").value=""; }
+
+// ── Tabs ─────────────────────────────────────────────────────────
+function buildTabs() {
+  const nav = document.getElementById("weeknav");
+  nav.innerHTML = '<span style="font-size:11px;color:#666;flex-shrink:0">Semanas:</span>';
+  for (let i=0;i<8;i++) {
+    const w = getWeek(i);
+    const btn = document.createElement("button");
+    btn.className = "wtab" + (i===0?" active":"");
+    btn.id = "tab"+i;
+    btn.textContent = `N°${w.num} · ${w.iso_s}`;
+    btn.onclick = () => loadWeek(i);
+    nav.appendChild(btn);
+  }
+}
+
+function setActiveTab(i) {
+  document.querySelectorAll(".wtab").forEach((t,j)=>{
+    t.className = "wtab" + (j===i?" active": cache[j]?" loaded":"");
+  });
+}
+
+// ── Load week ────────────────────────────────────────────────────
+async function loadWeek(offset) {
+  if (cache[offset]) { renderNewsletter(offset); return; }
+  activeWeek = offset;
+  setActiveTab(offset);
+  document.getElementById("edBadge").textContent = "Edición N°"+(offset+1);
+  document.getElementById("reloadBtn").disabled = true;
+  showLoading();
+  const steps = [
+    "Buscando normativa ambiental…",
+    "Rastreando noticias de empresas…",
+    "Revisando fiscalizaciones SMA…",
+    "Consultando novedades de proveedores…",
+    "Compilando datos y KPIs…",
+    "Redactando entrevista y reflexión…"
+  ];
+  let si=0;
+  const iv = setInterval(()=>{ si=(si+1)%steps.length; updateLoadStep(steps[si]); },2200);
+  updateLoadStep(steps[0]);
+  try {
+    const w = getWeek(offset);
+    const data = await fetchContent(w);
+    cache[offset] = data;
+    clearInterval(iv);
+    renderNewsletter(offset);
+  } catch(e) {
+    clearInterval(iv);
+    showError(e.message||"Error al cargar. Intenta de nuevo.");
+  }
+  document.getElementById("reloadBtn").disabled = false;
+}
+
+function reloadWeek(){ delete cache[activeWeek]; loadWeek(activeWeek); }
+
+function showLoading(step="Iniciando…"){
+  document.getElementById("pageContent").innerHTML=`
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="lmsg" id="loadMsg">🌿 Generando Weekly Green News</div>
+      <div class="lsub2" id="loadStep">${step}</div>
+      <div class="lsub2" style="font-size:10px;margin-top:8px;color:#aaa">Buscando noticias reales con fuentes verificadas…</div>
+    </div>`;
+}
+function updateLoadStep(s){ const el=document.getElementById("loadStep"); if(el) el.textContent=s; }
+function showError(msg){
+  document.getElementById("pageContent").innerHTML=`
+    <div class="errbox">
+      <div style="font-size:28px;margin-bottom:8px">⚠️</div>
+      <div style="font-weight:700;margin-bottom:4px">${msg}</div>
+      <button class="btn" style="margin-top:12px" onclick="reloadWeek()">Reintentar</button>
+    </div>`;
+}
+
+// ── API ──────────────────────────────────────────────────────────
+async function fetchContent(w) {
+  const prompt = `Eres el editor de "Weekly Green News", newsletter ambiental chileno editado por ${AUTORA}.
+
+Busca noticias REALES ocurridas entre ${w.iso_s} y ${w.iso_e} (o las más recientes disponibles) sobre medio ambiente en Chile.
+
+Organiza en 5 secciones:
+1. NORMATIVA: leyes, decretos, normas ambientales chilenas (MMA, SMA, SEA)
+2. EMPRESAS: noticias de empresas, economía circular, proyectos verdes en Chile
+3. FISCALIZACIONES: acciones SMA, multas, sumarios, inspecciones
+4. PROVEEDORES: novedades de consultoras, operadores, gestores, tecnología ambiental
+5. DATOS_KPI: 4 indicadores numéricos verificados del ecosistema ambiental chileno
+
+Además:
+6. ENTREVISTA: 2 preguntas y respuestas con persona real o representativa del sector
+7. REFLEXION: reflexión editorial breve (2-3 líneas)
+
+REGLAS ESTRICTAS:
+- Solo hechos verificables y reales. NO inventes datos ni noticias.
+- Cada ítem incluye: titulo, descripcion, fuente, url, fecha
+- Si no hay info verificada, indica dónde buscar
+
+Responde SOLO JSON válido:
+{
+  "normativa":[{"titulo":"","descripcion":"","fuente":"","url":"","fecha":""}],
+  "empresas":[{"titulo":"","descripcion":"","fuente":"","url":"","fecha":"","tipo":""}],
+  "fiscalizaciones":[{"industria":"","empresa_o_sector":"","motivo":"","estado":"","fuente":"","url":"","fecha":""}],
+  "proveedores":[{"titulo":"","descripcion":"","fuente":"","url":"","fecha":"","tipo":""}],
+  "datos_kpi":[{"valor":"","descripcion":"","fuente":""}],
+  "entrevista":{"nombre":"","cargo":"","es_real":true,"preguntas":[{"q":"","a":""}]},
+  "reflexion":{"texto":"","autor":""}
+}`;
+
+  const res = await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01"},
+    body:JSON.stringify({
+      model:"claude-sonnet-4-20250514",
+      max_tokens:4000,
+      tools:[{type:"web_search_20250305",name:"web_search"}],
+      messages:[{role:"user",content:prompt}]
+    })
+  });
+  if(!res.ok){ const d=await res.json().catch(()=>({})); throw new Error(d?.error?.message||`Error ${res.status}`); }
+  const data = await res.json();
+  const text = data.content.filter(b=>b.type==="text").map(b=>b.text).join("");
+  const clean = text.replace(/```json|```/g,"").trim();
+  return JSON.parse(clean.slice(clean.indexOf("{"), clean.lastIndexOf("}")+1));
+}
+
+// ── Render ───────────────────────────────────────────────────────
+function renderNewsletter(offset){
+  activeWeek = offset;
+  setActiveTab(offset);
+  document.getElementById("edBadge").textContent = "Edición N°"+(offset+1);
+  const w = getWeek(offset);
+  const d = cache[offset];
+
+  // fuentes
+  const srcs=[];
+  const addSrc=(items)=>items?.forEach(i=>{ if(i.fuente&&!srcs.find(s=>s.f===i.fuente)) srcs.push({f:i.fuente,u:i.url}); });
+  addSrc(d.normativa); addSrc(d.empresas); addSrc(d.fiscalizaciones); addSrc(d.proveedores);
+  d.datos_kpi?.forEach(k=>{ if(k.fuente&&!srcs.find(s=>s.f===k.fuente)) srcs.push({f:k.fuente,u:null}); });
+
+  function badge(e){
+    if(!e) return `<span class="badge b-pend">–</span>`;
+    const l=e.toLowerCase();
+    if(l.includes("sancion")||l.includes("multa")||l.includes("infrac")) return `<span class="badge b-sanc">${e}</span>`;
+    if(l.includes("proceso")||l.includes("invest")||l.includes("pend")) return `<span class="badge b-pend">${e}</span>`;
+    return `<span class="badge b-ok">${e}</span>`;
+  }
+  function metaHtml(i){ return `<div class="meta">${i.fecha?i.fecha+' · ':''}<strong>${i.fuente||''}</strong>${i.url?` · <a href="${i.url}" target="_blank" rel="noreferrer">ver fuente ↗</a>`:''}</div>`; }
+  function cards2(items,tagClass,tagFn){
+    if(!items?.length) return `<div class="empty">Sin información verificada para este período.</div>`;
+    return `<div class="twocol">${items.map(i=>`<div class="card"><span class="ctag ${tagClass}">${tagFn(i)}</span><h3>${i.titulo}</h3><p>${i.descripcion}</p>${metaHtml(i)}</div>`).join("")}</div>`;
+  }
+
+  const html = `
+    <div class="phdr">
+      <div><div class="pmast">Weekly <span>Green News</span></div><div class="ptag">Medio Ambiente Chile · Normativa · Empresas · Fiscalización · Datos</div></div>
+      <div class="pmeta"><strong>Edición N°${w.num}</strong><br>${w.label}<br>Por <strong>${AUTORA}</strong></div>
+    </div>
+    <div class="psubbr"><span>📅 ${w.label}</span><span>🇨🇱 Fuentes verificadas · Actualización semanal</span></div>
+
+    <div class="pcont">
+
+      <div class="seclbl"><span>📊</span><h2>Datos & KPIs del Ecosistema Ambiental</h2><div class="secline"></div></div>
+      ${d.datos_kpi?.length
+        ? `<div class="kgrid">${d.datos_kpi.slice(0,4).map(k=>`<div class="kbox"><div class="knum">${k.valor}</div><div class="klbl">${k.descripcion}</div>${k.fuente?`<div class="ksrc">${k.fuente}</div>`:''}</div>`).join("")}</div>`
+        : `<p style="font-size:10px;color:#999;margin-bottom:10px">Sin datos verificados para este período.</p>`}
+
+      <div class="seclbl"><span>📜</span><h2>Actualización Normativa Ambiental</h2><div class="secline"></div></div>
+      ${cards2(d.normativa,"","()=>'Normativa'")}
+      ${d.normativa?.length?`<div class="twocol">${d.normativa.map(n=>`<div class="card"><span class="ctag">Normativa</span><h3>${n.titulo}</h3><p>${n.descripcion}</p>${metaHtml(n)}</div>`).join("")}</div>`:``}
+
+      <div class="seclbl"><span>🏭</span><h2>Noticias de Empresas & Mundo Verde</h2><div class="secline"></div></div>
+      ${d.empresas?.length
+        ? `<div class="twocol">${d.empresas.map(e=>`<div class="card"><span class="ctag blue">${e.tipo||'Empresa'}</span><h3>${e.titulo}</h3><p>${e.descripcion}</p>${metaHtml(e)}</div>`).join("")}</div>`
+        : `<div class="empty">Sin noticias verificadas para este período.</div>`}
+
+      <div class="seclbl"><span>🔍</span><h2>Fiscalizaciones & Seguimiento Legal</h2><div class="secline"></div></div>
+      ${d.fiscalizaciones?.length
+        ? `<table class="tabla"><thead><tr><th>Industria</th><th>Empresa/Sector</th><th>Motivo</th><th>Estado</th><th>Fuente</th></tr></thead><tbody>
+          ${d.fiscalizaciones.map(f=>`<tr><td>${f.industria}</td><td>${f.empresa_o_sector}</td><td>${f.motivo}</td><td>${badge(f.estado)}</td><td>${f.url?`<a href="${f.url}" target="_blank">${f.fuente}</a>`:f.fuente||''}</td></tr>`).join("")}
+          </tbody></table>`
+        : `<div class="empty">Sin fiscalizaciones verificadas este período. Fuente: <a href="https://www.sma.gob.cl" target="_blank">sma.gob.cl</a></div>`}
+
+      <div class="seclbl"><span>🤝</span><h2>Novedades de Proveedores & Servicios Ambientales</h2><div class="secline"></div></div>
+      ${d.proveedores?.length
+        ? `<div class="twocol">${d.proveedores.map(p=>`<div class="card"><span class="ctag amber">${p.tipo||'Proveedor'}</span><h3>${p.titulo}</h3><p>${p.descripcion}</p>${metaHtml(p)}</div>`).join("")}</div>`
+        : `<div class="empty">Sin novedades verificadas para este período.</div>`}
+
+      <div class="divider"></div>
+
+      <div class="botgrid">
+        ${d.entrevista?`
+        <div class="intbox">
+          <span class="ibadge">🎙 Entrevista de la Semana</span>
+          <div class="ihdr">
+            <div class="iavatar">👤</div>
+            <div>
+              <div class="iname">${d.entrevista.nombre}${d.entrevista.es_real?'<span class="rbadge">Perfil real</span>':'<span class="abadge2">Perfil representativo</span>'}</div>
+              <div class="irole">${d.entrevista.cargo}</div>
+            </div>
+          </div>
+          ${(d.entrevista.preguntas||[]).map(qa=>`<div class="qa"><div class="qq">▸ ${qa.q}</div><div class="qa">${qa.a}</div></div>`).join("")}
+        </div>`:''}
+        ${d.reflexion?`
+        <div class="refl">
+          <div style="font-size:22px;margin-bottom:6px">🌱</div>
+          <blockquote>"${d.reflexion.texto}"</blockquote>
+          <cite>${d.reflexion.autor}</cite>
+        </div>`:''}
+      </div>
+
+    </div>
+
+    ${srcs.length?`
+    <div class="fuentes">
+      <h4>📎 Fuentes citadas en esta edición</h4>
+      <ul>${srcs.map((s,i)=>`<li>[${i+1}] ${s.u?`<a href="${s.u}" target="_blank">${s.f}</a>`:s.f}</li>`).join("")}</ul>
+    </div>`:''}
+
+    <div class="pfooter">
+      <div class="pfl"><strong>${AUTORA}</strong> · Editora responsable<br>Contenido basado en fuentes verificadas · Edición N°${w.num}</div>
+      <div class="pfr">🌿 Weekly Green News</div>
+    </div>`;
+
+  document.getElementById("pageContent").innerHTML = html;
+}
+</script>
+</body>
+</html>
